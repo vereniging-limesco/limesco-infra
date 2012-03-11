@@ -1,5 +1,5 @@
 # Django settings for liminfra project.
-from liminfra import passwords
+from liminfra import sitesettings
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -15,7 +15,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'infra',
         'USER': 'infra',
-        'PASSWORD': passwords.MYSQL_PASSWORD,
+        'PASSWORD': sitesettings.MYSQL_PASSWORD,
         'HOST': '',
         'PORT': '',
     }
@@ -46,12 +46,12 @@ USE_L10N = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
-MEDIA_ROOT = ''
+MEDIA_ROOT = sitesettings.LIMINFRA_ROOT + 'media/'
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
 # Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
-MEDIA_URL = ''
+MEDIA_URL = '/media/'
 
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
@@ -84,7 +84,7 @@ STATICFILES_FINDERS = (
 )
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = passwords.SECRET_KEY
+SECRET_KEY = sitesettings.SECRET_KEY
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -142,3 +142,7 @@ LOGGING = {
         },
     }
 }
+
+DEFAULT_FROM_EMAIL = sitesettings.DEFAULT_FROM_EMAIL
+SITE_URL = sitesettings.SITE_URL
+LOGIN_REDIRECT_URL = '/'

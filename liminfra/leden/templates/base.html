@@ -1,0 +1,23 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<head>
+		<title>Limesco ledenwebsite</title>
+		<link href="{{ MEDIA_URL }}style.css" rel="stylesheet" type="text/css" />
+		<script type="text/javascript">
+			{% block javascript %}{% endblock %}
+		</script>
+		{% block head %}{% endblock %}
+	</head>
+	<body{% block bodyattrs %}{% endblock %}>
+{% if messages %}
+		<ul class="messages">
+	{% for message in messages %}
+			<li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+	{% endfor %}
+		</ul>
+{% endif %}
+		<div id="content">
+			{% block body %}{% endblock %}
+		</div>
+	</body>
+</html>

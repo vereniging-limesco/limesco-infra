@@ -1,0 +1,6 @@
+# Example sitesettings.py
+LIMINFRA_ROOT = '/path/to/git/clone/'
+SITE_URL = 'http://host/path/to/site/'
+DEFAULT_SITE_EMAIL = 'Limesco infra <infra@limesco.org>'
+MYSQL_PASSWORD = 'abcdef'
+SECRET_KEY = 'change me'
