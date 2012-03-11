@@ -1,0 +1,6 @@
+Dit project is ontwikkeld met Django 1.3.1 en python 2.6.7.
+
+Zet de volgende variabelen in je environment:
+	PYTHONPATH=/path/to/repo/
+
+-- Quis
