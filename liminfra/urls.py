@@ -7,6 +7,8 @@ admin.autodiscover()
 from liminfra.settings import MEDIA_ROOT
 
 urlpatterns = patterns('',
+	url(r'^$', 'liminfra.leden.views.welcome', name='welcome'),
+
 	url(r'^accounts/login/$', 'django.contrib.auth.views.login', {'template_name': 'login.html'}, name='login'),
 	url(r'^accounts/logout/$', 'django.contrib.auth.views.logout_then_login', name='logout'),
 
