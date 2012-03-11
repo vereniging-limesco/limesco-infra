@@ -31,6 +31,14 @@ De productiesettings die ik nu gebruik in Apache (2.2) zijn:
 			Allow from all
 		</Files>
 	</Directory>
+	<Location /static/>
+		Order deny,allow
+		Allow from all
+	</Location>
+	<Location /media/>
+		Order deny,allow
+		Allow from all
+	</Location>
 
 en dan de FastCGI server starten met
 $ python manage.py runfcgi host=127.0.0.1 port=3303 pidfile=/path/to/pidfile
