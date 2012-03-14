@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block body %}
+<h1>Welkom</h1>
+<p>Dag {{ user.user }}.</p>
+
+{% if my_tickets %}
+<table>
+	{% for t in my_tickets %}
+	<tr>
+		<td><a href="{% url view-ticket id=t.id %}">#{{ t.id }}</a>
+		<td>{{ t.created }}</td>
+		<td>{{ t.subject }}</td>
+		<td>{{ t.state }}</td>
+	</tr>
+	{% endfor %}
+</table>
+{% endif %}
+
+{% if assigned_tickets %}
+<table>
+	{% for t in assigned_tickets %}
+	<tr>
+		<td><a href="{% url view-ticket id=t.id %}">#{{ t.id }}</a>
+		<td>{{ t.created }}</td>
+		<td>{{ t.subject }}</td>
+		<td>{{ t.state }}</td>
+	</tr>
+	{% endfor %}
+</table>
+{% endif %}
+{% endblock %}

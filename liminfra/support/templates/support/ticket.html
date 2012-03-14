@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block body %}
+<h1>Ticket #{{ t.id }}</h1>
+<table>
+	<tr>
+		<td>Onderwerp</td>
+		<td>{{ t.subject }}</td>
+	</tr>
+	<tr>
+		<td>Gemaakt door</td>
+		<td>{{ t.asker }}</td>
+	</tr>
+	<tr>
+		<td>Gemaakt op</td>
+		<td>{{ t.created }}</td>
+	</tr>
+	<tr>
+		<td>Niveau</td>
+		<td>{{ t.level }}</td>
+	</tr>
+	<tr>
+		<td>Categorie</td>
+		<td>{{ t.category }}</td>
+	</tr>
+	<tr>
+		<td>Toegewezen aan</td>
+		<td>{{ t.assignee }}</td>
+	</tr>
+	<tr>
+		<td>Status</td>
+		<td>{{ t.get_state_display.capitalize }}</td>
+	</tr>
+	<tr>
+		<td>Priv&eacute;</td>
+		<td>{{ t.private }}</td>
+	</tr>
+</table>
+
+<table>
+	{% for e in history %}
+	<tr class="{{ e.get_type }}">
+		{% if e.type == "TicketMessage" %}
+			<td>{{ e.date }}</td>
+			<td>{{ e.person }}</td>
+			<td>Message: {{ e.message }}</td>
+		{% endif %}{% if e.type == "TicketChange" %}
+			<td>{{ e.date }}</td>
+			<td>{{ e.person }}</td>
+			<td>
+			{% if e.category %}
+				Categorie: {{ e.category.0 }} -> {{ e.category.1 }}<br>
+			{% endif %}
+			{% if e.state %}
+				State: {{ e.state.0 }} -> {{ e.state.1 }}<br>
+			{% endif %}
+			{% if e.private %}
+				Priv&eacute;: {{ e.private.0 }} -> {{ e.private.1 }}<br>
+			{% endif %}
+			{% if e.level %}
+				Niveau: {{ e.level.0 }} -> {{ e.level.1 }}<br>
+			{% endif %}
+			{% if e.assignee %}
+				Toegewezen: {{ e.assignee.0 }} -> {{ e.assignee.1 }}<br>
+			{% endif %}
+			</td>
+		{% endif %}{% if e.type == "TicketComplaint" %}
+			<td>{{ e.date }}</td>
+			<td>{{ e.person }}</td>
+			<td>Complaint gefiled tegen {{ e.against }}: {{ e.why }}</td>
+		{% endif %}{% if e.type == "TicketFAQReply" %}
+			<td>{{ e.date }}</td>
+			<td>{{ e.person }}</td>
+			<td><b>{{ e.question }}</b><br>{{ e.answer }}</td>
+		{% endif %}{% if e.type == "TicketBounty" %}
+			<td>{{ e.date }}</td>
+			<td>{{ e.person }}</td>
+			<td>Bounty: &euro; {{ e.value }}</td>
+		{% endif %}{% if e.type == "TicketTake" %}
+			<td>{{ e.date }}</td>
+			<td>{{ e.person }}</td>
+			<td>Taken</td>
+		{% endif %}{% if e.type == "TicketAbandoned" %}
+			<td>{{ e.date }}</td>
+			<td>{{ e.person }}</td>
+			<td>Abandoned (level {{ e.old_level }} -> {{ e.new_level }})</td>
+		{% endif %}
+	</tr>
+	{% endfor %}
+</table>
+
+<form method="POST">
+{% csrf_token %}
+<fieldset>
+	<legend>Reactie</legend>
+	<textarea name="message">{{ message }}</textarea>
+{% if is_assignee and t.waitsfor == 'assignee' %}
+	<input type="checkbox" id="id_backtoyou" name="backtoyou" checked><label for="id_backtoyou"> Leg het balletje weer bij de klant</label>
+	<input type="submit" value="Post reply">
+{% endif %}
+</fieldset>
+</form>
+{% if is_assignee %}
+<form method="POST">
+{% csrf_token %}
+<fieldset>
+	<legend>FAQ-reply</legend>
+	<select name="faqreply">
+		<option value="">Selecteer FAQ-vraag</option>
+		{# XXX manier om het antwoord ook te tonen #}
+	{% for faq in faqs %}
+		<option value="{{ faq.id }}">{{ faq.question }}</option>
+	{% endfor %}
+	</select>
+	<input type="submit" value="Beantwoord met FAQ">
+	<input type="submit" name="mark_invalid" value="Geen zinvolle vraag">
+	<input type="submit" name="mark_spam" value="Spam">
+</fieldset>
+</form>
+{% endif %}
+
+{% if not is_assignee %}
+<form method="POST">
+{% csrf_token %}
+<fieldset>
+	<legend>File complaint</legend>
+	<input type="text" name="complaint" value="">
+	<input type="submit" value="File complaint">
+</fieldset>
+</form>
+{% endif %}
+{% endblock %}

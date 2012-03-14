@@ -122,9 +122,14 @@ INSTALLED_APPS = (
 	'django.contrib.admin',
 )
 if sitesettings.INSTANCE_TYPE == 'portal':
-	INSTALLED_APPS += ('liminfra.portal', )
+	INSTALLED_APPS += (
+		'liminfra.portal',
+		'liminfra.support',
+	)
 elif sitesettings.INSTANCE_TYPE == 'memberadmin':
-	INSTALLED_APPS += ('liminfra.memberadmin', )
+	INSTALLED_APPS += (
+		'liminfra.memberadmin',
+	)
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

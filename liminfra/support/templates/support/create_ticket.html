@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block body %}
+<h1>Ticket aanmaken</h1>
+<form method="POST">
+{% csrf_token %}
+<table>
+	{{ form.as_table }}
+	<tr>
+		<td></td>
+		<td><input type="submit" value="Maak aan"></td>
+	</tr>
+</table>
+</form>
+{% endblock %}

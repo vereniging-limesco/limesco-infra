@@ -24,3 +24,7 @@ if 'liminfra.portal' in settings.INSTALLED_APPS:
 		url(r'^accounts/login/$', 'django.contrib.auth.views.login', {'template_name': 'login.html'}, name='login'),
 		url(r'^accounts/logout/$', 'django.contrib.auth.views.logout_then_login', name='logout'),
 	)
+if 'liminfra.support' in settings.INSTALLED_APPS:
+	urlpatterns += patterns('',
+		url(r'^support/', include('liminfra.support.urls')),
+	)
