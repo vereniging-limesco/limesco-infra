@@ -2,7 +2,7 @@
 
 {% block body %}
 <h1>Welkom</h1>
-<p>Dag {{ user.member.get_full_name }}.</p>
+<p>Dag {{ user.user.public_name }}.</p>
 
 <a href="{% url logout %}">Uitloggen?</a>
 {% endblock %}

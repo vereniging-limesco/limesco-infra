@@ -4,4 +4,4 @@ from django.shortcuts import render_to_response
 
 @login_required
 def welcome(request):
-	return render_to_response('leden/welcome.html', {}, context_instance=RequestContext(request))
+	return render_to_response('portal/welcome.html', {}, context_instance=RequestContext(request))

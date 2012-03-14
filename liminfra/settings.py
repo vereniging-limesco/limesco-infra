@@ -117,8 +117,11 @@ INSTALLED_APPS = (
 	'django.contrib.messages',
 	'django.contrib.staticfiles',
 	'django.contrib.admin',
-	'limesco.leden',
 )
+if sitesettings.INSTANCE_TYPE == 'portal':
+	INSTALLED_APPS += ('liminfra.portal', )
+elif sitesettings.INSTANCE_TYPE == 'memberadmin':
+	INSTALLED_APPS += ('liminfra.memberadmin', )
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
