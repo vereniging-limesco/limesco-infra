@@ -119,6 +119,12 @@ if sitesettings.INSTANCE_TYPE == 'portal':
 elif sitesettings.INSTANCE_TYPE == 'memberadmin':
 	INSTALLED_APPS += ('liminfra.memberadmin', )
 
+if sitesettings.INSTANCE_TYPE == 'portal':
+	AUTHENTICATION_BACKENDS = (
+		'liminfra.portal.auth.AuthBackend',
+	)
+
+
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
 # the site admins on every HTTP 500 error.
