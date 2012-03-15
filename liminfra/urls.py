@@ -8,6 +8,7 @@ admin.autodiscover()
 urlpatterns = patterns('',
 	# Dit kan je beter door je webserver laten doen. Die is daar beter in.
 	(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
+	(r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT}),
 )
 
 if settings.DEBUG or 'liminfra.memberadmin' in settings.INSTALLED_APPS:
