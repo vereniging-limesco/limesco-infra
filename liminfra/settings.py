@@ -8,7 +8,7 @@ DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
-	('Jille Timmermans', 'jille@limesco.org'),
+	('BOFH', 'bofh@lists.limesco.nl'),
 )
 
 MANAGERS = ADMINS
@@ -115,9 +115,15 @@ INSTALLED_APPS = (
 	'django.contrib.admin',
 )
 if sitesettings.INSTANCE_TYPE == 'portal':
-	INSTALLED_APPS += ('liminfra.portal', )
+	INSTALLED_APPS += (
+		'liminfra.portal',
+		'liminfra.sync',
+	)
 elif sitesettings.INSTANCE_TYPE == 'memberadmin':
-	INSTALLED_APPS += ('liminfra.memberadmin', )
+	INSTALLED_APPS += (
+		'liminfra.memberadmin',
+		'liminfra.sync',
+	)
 
 if sitesettings.INSTANCE_TYPE == 'portal':
 	AUTHENTICATION_BACKENDS = (
@@ -151,3 +157,20 @@ LOGGING = {
 DEFAULT_FROM_EMAIL = sitesettings.DEFAULT_FROM_EMAIL
 #SITE_URL = sitesettings.SITE_URL
 LOGIN_REDIRECT_URL = '/'
+
+SPOOL_DAEMONS = {
+	'syncmembers': {
+		'name': 'syncmembers',
+		'uid': 999,
+		'gid': 999,
+	},
+}
+LISTEN_DAEMON = False
+PUSH_DAEMON = False
+
+if sitesettings.INSTANCE_TYPE == 'memberadmin':
+	SPOOL_DAEMONS['syncmembers']['spool_remote'] = '10.66.0.6'
+
+	PUSH_DAEMON = True
+elif sitesettings.INSTANCE_TYPE == 'portal':
+	LISTEN_DAEMON = '10.66.0.6'
