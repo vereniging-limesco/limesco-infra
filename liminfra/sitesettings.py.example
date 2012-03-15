@@ -1,6 +1,13 @@
 # Example sitesettings.py
 SITE_URL = 'http://host/path/to/site/'
 DEFAULT_FROM_EMAIL = 'Limesco infra <infra@limesco.nl>'
-MYSQL_PASSWORD = 'abcdef'
 SECRET_KEY = 'change me'
 INSTANCE_TYPE = 'portal' # portal or memberadmin
+DATABASE_SETTINGS = {
+	'ENGINE': 'django.db.backends.mysql',
+	'NAME': 'liminfra',
+	'USER': 'liminfra',
+	'PASSWORD': 'qwerty',
+	'HOST': '',
+	'PORT': '',
+}

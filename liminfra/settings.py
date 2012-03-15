@@ -14,14 +14,7 @@ ADMINS = (
 MANAGERS = ADMINS
 
 DATABASES = {
-	'default': {
-		'ENGINE': 'django.db.backends.mysql',
-		'NAME': 'infra',
-		'USER': 'infra',
-		'PASSWORD': sitesettings.MYSQL_PASSWORD,
-		'HOST': '',
-		'PORT': '',
-	}
+	'default': sitesettings.DATABASE_SETTINGS,
 }
 
 # Local time zone for this installation. Choices can be found here:
