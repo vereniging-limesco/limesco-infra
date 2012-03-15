@@ -169,8 +169,8 @@ LISTEN_DAEMON = False
 PUSH_DAEMON = False
 
 if sitesettings.INSTANCE_TYPE == 'memberadmin':
-	SPOOL_DAEMONS['syncmembers']['spool_remote'] = '10.66.0.6'
+	SPOOL_DAEMONS['syncmembers']['spool_remote'] = sitesettings.IP_PORTAL_HOST
 
 	PUSH_DAEMON = True
 elif sitesettings.INSTANCE_TYPE == 'portal':
-	LISTEN_DAEMON = '10.66.0.6'
+	LISTEN_DAEMON = sitesettings.IP_PORTAL_HOST

@@ -3,6 +3,7 @@ SITE_URL = 'http://host/path/to/site/'
 DEFAULT_FROM_EMAIL = 'Limesco infra <infra@limesco.nl>'
 SECRET_KEY = 'change me'
 INSTANCE_TYPE = 'portal' # portal or memberadmin
+IP_PORTAL_HOST = '192.168.0.2'
 DATABASE_SETTINGS = {
 	'ENGINE': 'django.db.backends.mysql',
 	'NAME': 'liminfra',

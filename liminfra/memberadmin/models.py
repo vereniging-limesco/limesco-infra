@@ -1,4 +1,5 @@
 from django.db import models
+from liminfra.sync.util import add_spool_entry
 
 class Member(models.Model):
 	username = models.CharField(max_length=30, unique=True, help_text="Required. 30 characters or fewer. Letters, numbers and @/./+/-/_ characters")
@@ -27,6 +28,22 @@ class Member(models.Model):
 
 	def __unicode__(self):
 		return self.get_full_name()
+
+	def save(self, *args, **kwargs):
+		hadId = self.id
+		super(Member, self).save(*args, **kwargs)
+		cmd = 'add_user' if not hadId else 'update_user'
+		add_spool_entry('syncmembers', cmd, {
+			'username': self.username,
+			'password': self.password,
+			'public_name': self.public_name,
+			'is_active': self.is_active,
+			'is_male': self.is_male,
+		})
+
+	def delete(self, *args, **kwargs):
+		super(Member, self).delete(*args, **kwargs)
+		add_spool_entry('syncmembers', 'remove_user', {'username': self.username})
 
 class Group(models.Model):
 	name = models.CharField(max_length=80, unique=True)
