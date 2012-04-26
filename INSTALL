@@ -6,6 +6,21 @@ Zet de volgende variabelen in je environment:
 	PYTHONPATH=/path/to/repo/
 Copy sitesettings.py.example naar sitesettings.py en pas de waarden aan.
 
+Zodra je de database hebt ingesteld, moet je de database syncen; je krijgt
+hier ook meteen de vraag of je een super-user wil aanmaken voor jezelf, doe
+dat;
+$ python manage.py syncdb
+Zodra die user is aangemaakt moet je in de database nog bijwerken dat je
+ook in portal_user staat, b.v. bij sqlite:
+sqlite> .schema portal_user
+CREATE TABLE "portal_user" (
+    "user_ptr_id" integer NOT NULL PRIMARY KEY REFERENCES "auth_user" ("id"),
+    "public_name" varchar(60) NOT NULL,
+    "is_male" bool NOT NULL
+);
+sqlite> insert into portal_user (user_ptr_id, public_name, is_male)
+   ...> values (1, "Jouw Volledige Naam", true);
+
 Om de admin-interface (fatsoenlijk) werkend te krijgen (CSS, etc) moet je:
 $ python manage.py collectstatic
 doen.
