@@ -113,22 +113,25 @@ INSTALLED_APPS = (
 	'django.contrib.messages',
 	'django.contrib.staticfiles',
 	'django.contrib.admin',
+	'liminfra.members',
+	'liminfra.sync',
 )
-if sitesettings.INSTANCE_TYPE == 'portal':
-	INSTALLED_APPS += (
-		'liminfra.portal',
-		'liminfra.sync',
-	)
-elif sitesettings.INSTANCE_TYPE == 'memberadmin':
-	INSTALLED_APPS += (
-		'liminfra.memberadmin',
-		'liminfra.sync',
-	)
+#if sitesettings.INSTANCE_TYPE == 'portal':
+#	INSTALLED_APPS += (
+#		'liminfra.portal',
+#	)
+#elif sitesettings.INSTANCE_TYPE == 'memberadmin':
+#	INSTALLED_APPS += (
+#		'liminfra.members',
+#	)
 
-if sitesettings.INSTANCE_TYPE == 'portal':
-	AUTHENTICATION_BACKENDS = (
-		'liminfra.portal.auth.AuthBackend',
-	)
+#if sitesettings.INSTANCE_TYPE == 'portal':
+#	AUTHENTICATION_BACKENDS = (
+#		'liminfra.portal.auth.AuthBackend',
+#	)
+AUTHENTICATION_BACKENDS = (
+	'liminfra.members.auth.AuthBackend',
+)
 
 
 # A sample logging configuration. The only tangible logging
@@ -157,20 +160,44 @@ LOGGING = {
 DEFAULT_FROM_EMAIL = sitesettings.DEFAULT_FROM_EMAIL
 #SITE_URL = sitesettings.SITE_URL
 LOGIN_REDIRECT_URL = '/'
+MEDIAWIKI_PATH = '/usr/local/www/mediawiki/'
 
-SPOOL_DAEMONS = {
-	'syncmembers': {
-		'name': 'syncmembers',
+#SPOOL_DAEMONS = {
+#	'syncmembers': {
+#		'name': 'syncmembers',
+#		'uid': 999,
+#		'gid': 999,
+#	},
+#}
+#LISTEN_DAEMON = False
+#PUSH_DAEMON = False
+#
+#if sitesettings.INSTANCE_TYPE == 'memberadmin':
+#	SPOOL_DAEMONS['syncmembers']['spool_remote'] = sitesettings.IP_PORTAL_HOST
+#
+#	PUSH_DAEMON = True
+#elif sitesettings.INSTANCE_TYPE == 'portal':
+#	LISTEN_DAEMON = sitesettings.IP_PORTAL_HOST
+
+DAEMONS = {
+	'postfix': {
+		'name': 'Postfix',
+		'uid': 125,
+		'gid': 125,
+	},
+	'mailman': {
+		'name': 'Mailman',
+		'uid': 91,
+		'gid': 91,
+	},
+	'wiki': {
+		'name': 'Wiki',
+		'uid': 517,
+		'gid': 517,
+	},
+	'ccd': {
+		'name': 'CCD',
 		'uid': 999,
 		'gid': 999,
 	},
 }
-LISTEN_DAEMON = False
-PUSH_DAEMON = False
-
-if sitesettings.INSTANCE_TYPE == 'memberadmin':
-	SPOOL_DAEMONS['syncmembers']['spool_remote'] = sitesettings.IP_PORTAL_HOST
-
-	PUSH_DAEMON = True
-elif sitesettings.INSTANCE_TYPE == 'portal':
-	LISTEN_DAEMON = sitesettings.IP_PORTAL_HOST

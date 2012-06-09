@@ -11,20 +11,12 @@ states = (
 	('crashed', 'Crashed'),
 )
 daemon_choices = []
-for d, info in settings.SPOOL_DAEMONS.items():
+for d, info in settings.DAEMONS.items():
 	daemon_choices.append((d, info['name']))
 
-if settings.DATABASES['default']['ENGINE'] != 'django.db.backends.sqlite3':
-	class EnumField(models.Field):
-		def db_type(self, connection):
-			return "enum({0})".format(','.join("'%s'" % v[0] for v in self.choices))
-else:
-	# SQLite snapt enums niet..
-	class EnumField(models.CharField):
-		def __init__(self, *args, **kwargs):
-			if 'max_length' not in kwargs:
-				kwargs['max_length'] = max(16, max(map(lambda v: len(v[0]), kwargs['choices'])))
-			super(EnumField, self).__init__(*args, **kwargs)
+class EnumField(models.Field):
+	def db_type(self, connection):
+		return "enum({0})".format(','.join("'%s'" % v[0] for v in self.choices))
 
 class SpoolEntry(models.Model):
 	daemon = EnumField(choices=daemon_choices)

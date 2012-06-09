@@ -1,8 +1,7 @@
-from knds import settings
-from knds.base.models import Domain
-from knds.mail.models import Alias, List, ListMember, ListModerator
-from knds.sync.syncd import skip_queued_items
-from knds.sync.util import add_spool_entry
+from cStringIO import StringIO
+from liminfra import settings
+from liminfra.sync.syncd import skip_queued_items
+from liminfra.sync.util import add_spool_entry
 import subprocess
 import os.path
 
@@ -12,41 +11,50 @@ import Mailman.UserDesc
 import Mailman.MemberAdaptor
 from Mailman import MailList, mm_cfg
 
-settings.MAILMAN_PATH = '/usr/lib/mailman/'
-settings.MAILMAN_DEFAULT_OWNER = 'mailman@lists.kndstest.quis.cx'
+settings.MAILMAN_PATH = '/usr/local/mailman/'
+settings.MAILMAN_DEFAULT_OWNER = 'bofh@lists.limesco.nl'
 
 def init(commands):
+	commands.register(get_state)
 	commands.register(add_list_members)
 	commands.register(remove_list_members)
 	commands.register(update_list_member_settings)
-	commands.register(update_list_settings)
+	# commands.register(update_list_settings)
 	commands.register(create_list)
-	commands.register(delete_list)
-	commands.register(sync_lists)
-	commands.register(sync_list_members)
+	# commands.register(delete_list)
+	# commands.register(sync_lists)
+	# commands.register(sync_list_members)
+
+def get_state(se):
+	list, reply_daemon, reply_cmd = se.get_parameters()
+	ml = MailList.MailList(list, lock=False)
+	ret = []
+	ret.append(list)
+	ret.append(ml.members.keys())
+	add_spool_entry(reply_daemon, reply_cmd, ret)
 
 def add_list_members(se):
 	name, domain, addresses = se.get_parameters()
-	domain = Domain.objects.get(name=domain)
-	lst = List.objects.get(name=name, domain=domain)
-	nomail_list = map(lambda x: x.email, ListMember.objects.filter(list=lst, email__in=addresses, nomail=True))
-	ml = MailList.MailList(lst.name)
+	# domain = Domain.objects.get(name=domain)
+	# lst = List.objects.get(name=name, domain=domain)
+	# nomail_list = map(lambda x: x.email, ListMember.objects.filter(list=lst, email__in=addresses, nomail=True))
+	ml = MailList.MailList(name)
 	try:
 		for em in addresses:
 			pw = Mailman.Utils.MakeRandomPassword()
 			desc = Mailman.UserDesc.UserDesc(em, '', pw, False)
 			ml.ApprovedAddMember(desc, False, False)
-		for em in nomail_list:
-			ml.setDeliveryStatus(em, Mailman.MemberAdaptor.BYADMIN)
+		# for em in nomail_list:
+		#	ml.setDeliveryStatus(em, Mailman.MemberAdaptor.BYADMIN)
 	finally:
 		ml.Save()
 		ml.Unlock()
 
 def remove_list_members(se):
 	name, domain, addresses = se.get_parameters()
-	domain = Domain.objects.get(name=domain)
-	lst = List.objects.get(name=name, domain=domain)
-	ml = MailList.MailList(lst.name)
+	# domain = Domain.objects.get(name=domain)
+	# lst = List.objects.get(name=name, domain=domain)
+	ml = MailList.MailList(name)
 	try:
 		for em in addresses:
 			ml.ApprovedDeleteMember(em, admin_notif=False, userack=False)
@@ -55,9 +63,10 @@ def remove_list_members(se):
 		ml.Unlock()
 
 def update_list_member_settings(se):
+	"""
 	name, domain, addresses = se.get_parameters()
-	domain = Domain.objects.get(name=domain)
-	lst = List.objects.get(name=name, domain=domain)
+	# domain = Domain.objects.get(name=domain)
+	# lst = List.objects.get(name=name, domain=domain)
 	lms = ListMember.objects.filter(list=lst, email__in=addresses)
 	ml = MailList.MailList(lst.name)
 	try:
@@ -72,6 +81,8 @@ def update_list_member_settings(se):
 	finally:
 		ml.Save()
 		ml.Unlock()
+	"""
+	pass
 
 def update_list_settings(se):
 	name, domain = se.get_parameters()
@@ -101,12 +112,10 @@ def update_list_settings(se):
 
 def create_list(se):
 	name, domain = se.get_parameters()
-	domain = Domain.objects.get(name=domain)
-	lst = List.objects.get(name=name, domain=domain)
 	newlist = os.path.join(settings.MAILMAN_PATH, 'bin/newlist')
 	pw = Mailman.Utils.MakeRandomPassword()
-	subprocess.check_call([newlist, '-q', lst.name, settings.MAILMAN_DEFAULT_OWNER, pw])
-	ml = MailList.MailList(lst.name)
+	subprocess.check_call([newlist, '-q', name, settings.MAILMAN_DEFAULT_OWNER, pw])
+	ml = MailList.MailList(name)
 	try:
 		ml.send_reminders = 0
 		ml.send_welcome_msg = False
@@ -118,16 +127,10 @@ def create_list(se):
 		ml.max_num_recipients = 0
 		ml.archive = 0
 		ml.archive_private = 1
-		if lst.moderate_members:
-			default_member_moderation = 1
-		if not lst.moderate_nonmembers:
-			ml.generic_nonmember_action = 0
-		if lst.emergency:
-			ml.emergency = 1
+		ml.generic_nonmember_action = 0
 	finally:
 		ml.Save()
 		ml.Unlock()
-	add_spool_entry('postfix', 'update_domain_map', domain.name)
 
 def delete_list(se):
 	add_spool_entry('postfix', 'update_domain_map', domain.name)
@@ -169,3 +172,7 @@ def sync_lists(se):
 	for l in desired & current:
 		add_spool_entry('mailman', 'sync_list_members', [l, domain.name])
 		add_spool_entry('mailman', 'update_list_settings', [l, domain.name])
+
+if __name__ == '__main__':
+	ml = MailList.MailList('leden', lock=False)
+	print ml.members.keys()

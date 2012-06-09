@@ -17,9 +17,6 @@ class CommandList:
 	def unregister(self, method):
 		del self.ht[method.func_name]
 
-	def get(self, name):
-		return self.ht[name]
-
 def run(dmn, commands):
 	print dmn
 	while True:
@@ -36,7 +33,7 @@ def run(dmn, commands):
 				continue
 			entry.state = 'processing'
 			try:
-				fnc = commands.get(entry.command)
+				fnc = commands.ht[entry.command]
 				fnc(entry)
 			except:
 				traceback.print_exc()
@@ -57,7 +54,7 @@ def skip_queued_items(dmn, cmd, arguments=None):
 
 if __name__ == '__main__':
 	name = sys.argv[1]
-	dmn = settings.SPOOL_DAEMONS[name]
+	dmn = settings.DAEMONS[name]
 
 	commands = CommandList()
 	mod = __import__(name, level=1)

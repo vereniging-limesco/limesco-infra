@@ -1,7 +1,6 @@
 from cStringIO import StringIO
-from knds.base.models import Domain
-from knds.mail.models import Alias, List
-from knds.sync.syncd import skip_queued_items
+from liminfra.sync.syncd import skip_queued_items
+from liminfra.members.models import User
 import subprocess
 
 def init(commands):
@@ -9,24 +8,17 @@ def init(commands):
 
 def update_domain_map(se):
 	skip_queued_items(se.daemon, se.command, se.arguments)
-	domain = Domain.objects.get(name=se.get_parameters())
+	# domain = Domain.objects.get(name=se.get_parameters())
+	domain = name=se.get_parameters()
 	data = postfix_generate_virtual_map(domain)
-	fn = '/etc/postfix/virtual/'+ domain.name
+	fn = '/usr/local/etc/postfix/virtual/'+ domain
 	with open(fn, 'w') as fh:
 		fh.write(data)
 	subprocess.check_call(['postmap', fn])
 
 def postfix_generate_virtual_map(domain):
-	pmap = {}
-	for a in Alias.objects.filter(domain=domain):
-		if a.source not in pmap:
-			pmap[a.source] = []
-		pmap[a.source].append(a.target)
-	for l in List.objects.filter(domain=domain):
-		if l.name not in pmap:
-			pmap[l.name] = []
-		pmap[l.name].append(l.name +"@lists.knds.karpenoktem.nl")
 	out = StringIO();
-	for source, targets in pmap.items():
-		out.write("%s %s\n" % (source, " ".join(targets)))
+	if domain == 'leden.limesco.nl':
+		for a in User.objects.filter():
+			out.write("%s@%s %s\n" % (a.username, domain, a.email))
 	return out.getvalue()
