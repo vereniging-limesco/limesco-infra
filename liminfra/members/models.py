@@ -37,9 +37,18 @@ class User(auth_models.User):
 		add_spool_entry('mailman', cmd, ['announce', 'lists.limesco.nl', [self.email]])
 		if not hadId:
 			add_spool_entry('wiki', 'create_user', [self.username, self.password])
-			em = """Dag %(public_name)s,
+			em = """Beste %(public_name)s,
 
-Welkom bij Limesco! Een fatsoenlijke introductiemail volgt nog.
+Dank voor je aanmelding! Je staat genoteerd als lid van de vereniging Limesco (in oprichting).
+
+Meer informatie is te vinden op de wiki:
+http://wiki.limesco.org/
+
+Je kunt hier een account aanvragen.
+
+Er is een mailing-list voor leden. Hier zal ik je op abonneren.
+
+Momenteel is de vereniging in oprichting. Er is dan ook nog geen bankrekening om het lidmaatschapsgeld te innen. Zodra dit zo is, zal je een mailtje ontvangen.
 
 Met een vriendelijke groet,
 Het Limesco secretariaat
