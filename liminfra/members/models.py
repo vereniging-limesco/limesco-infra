@@ -17,6 +17,7 @@ class User(auth_models.User):
 	addr_number = models.CharField(max_length=20, blank=True)
 	addr_zip = models.CharField(max_length=10, blank=True)
 	addr_city = models.CharField(max_length=80, blank=True)
+	addr_country = models.CharField(max_length=80, default='Nederland', blank=True)
 
 	remarks = models.TextField(blank=True)
 
