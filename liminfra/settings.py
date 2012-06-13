@@ -131,6 +131,7 @@ INSTALLED_APPS = (
 #	)
 AUTHENTICATION_BACKENDS = (
 	'liminfra.members.auth.AuthBackend',
+	'django.contrib.auth.backends.ModelBackend'
 )
 
 
