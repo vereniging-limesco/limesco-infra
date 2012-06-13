@@ -10,6 +10,7 @@ class User(auth_models.User):
 	is_male = models.BooleanField(default=True) # helaas ;)
 	paid_2012 = models.BooleanField()
 	public_name = models.CharField(max_length=60)
+	kvk = models.CharField(max_length=32, null=True, blank=True)
 
 	telephone = models.CharField(max_length=20, blank=True)
 	addr_street = models.CharField(max_length=100, blank=True)
